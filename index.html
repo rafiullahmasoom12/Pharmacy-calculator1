@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>د درملو حساب سیسټم</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+	
+<!-- =============================================================== -->
+<!-- د ننوتلو پاڼه (Login Page) -->
+<!-- =============================================================== -->
+<div id="login-page" class="login-overlay" style="display: flex;">
+    <div class="login-box" id="loginBox">
+        
+        <!-- ============================================== -->
+        <!-- حالت ۱: لومړی ځل — پاسورډ ټاکل -->
+        <!-- ============================================== -->
+        <div id="setupPasswordPage" style="display: none;">
+            <div class="login-icon">💊</div>
+            <h1>د درملو حساب سیسټم</h1>
+            <p class="login-subtitle">د اخیستلو، خرڅلاو او حسابونو مدیریت</p>
+            
+            <div class="login-form">
+                <p style="text-align:center; color:#1a6b8a; font-weight:bold; margin-bottom:15px; font-size:15px;">
+                    🆕 د اپ پاسورډ ټاکل
+                </p>
+                
+                <label>🔒 نوی پاسورډ ولیکه:</label>
+                <input type="password" id="newPassword" placeholder="نوی پاسورډ (لږ تر لږه ۴ عدد)" 
+                       onkeypress="if(event.key === 'Enter') document.getElementById('confirmPassword').focus()">
+                
+                <label style="margin-top:12px;">🔒 بیا یې ولیکه:</label>
+                <input type="password" id="confirmPassword" placeholder="بیا یې ولیکه" 
+                       onkeypress="if(event.key === 'Enter') setUserPassword()">
+                
+                <p id="setupError" class="login-error" style="display:none;"></p>
+                
+                <button class="login-btn" onclick="setUserPassword()">✅ پاسورډ ټاکل</button>
+            </div>
+        </div>
+        
+        <!-- ============================================== -->
+        <!-- حالت ۲: ننوتل -->
+        <!-- ============================================== -->
+        <div id="loginPage" style="display: none;">
+            <div class="login-icon">💊</div>
+            <h1>د درملو حساب سیسټم</h1>
+            <p class="login-subtitle">د اخیستلو، خرڅلاو او حسابونو مدیریت</p>
+            
+            <div class="login-form">
+                <label>🔒 پاسورډ ولیکه:</label>
+                <input type="password" id="loginPassword" placeholder="پاسورډ ولیکه" 
+                       onkeypress="if(event.key === 'Enter') loginApp()">
+                
+                <p id="loginError" class="login-error" style="display:none;">
+                    ❌ پاسورډ سم نه دی!
+                </p>
+                
+                <button class="login-btn" onclick="loginApp()">🔓 ننوتل</button>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- د سرلیک برخه -->
+    <div class="header">
+        <h1>💊 د درملو حساب سیسټم</h1>
+        <p>د اخیستلو، خرڅلاو او حسابونو مدیریت</p>
+    </div>
+
+    <!-- =============================================================== -->
+    <!-- د کور پاڼه (Home Page) -->
+    <!-- =============================================================== -->
+    <div id="home-page" class="page-section active">
+        
+        <div class="menu-grid">
+    <!-- د درمل اخیستلو تڼۍ -->
+    <button class="menu-btn" onclick="showPage('buy-page')">💊 درملو اخیستل</button>
+    
+    <!-- د درمل پلورلو تڼۍ -->
+    <button class="menu-btn" onclick="showPage('sell-page')">🛒 درمل پلورل</button>
+    
+    <!-- د موجودي تڼۍ -->
+    <button class="menu-btn" onclick="showPage('inventory-page')">📦 موجودي</button>
+    
+    <!-- د دواخانې تڼۍ -->
+    <button class="menu-btn" onclick="showPage('pharmacy-page')">📋 دواخانې</button>
+    
+    <!-- د لیون تڼۍ -->
+    <button class="menu-btn" onclick="showPage('search-page')">🔍 لټون</button>
+    
+    <!-- 📊 راپور -->
+    <button class="menu-btn" onclick="showPage('report-page')">📊 راپور</button>
+    
+    <!-- 💾 بیکپ اخیستل -->
+    <button class="menu-btn" onclick="copyBackup()">
+    	خوندي کول📥
+    </button>
+    
+    <!-- 📥 بیکپ بحالول -->
+    <button class="menu-btn" onclick="restoreData()">
+      را ګرځول📤
+    </button>
+    
+    <!-- 🗑️ معلومات پاکول (لږ فاصله + سور) -->
+    <button class="menu-btn full-width" onclick="clearAllData()" style="background-color: #EF4444;">🗑️ معلومات پاکول</button>
+</div>
+        <!-- د عمومي معلوماتو برخه -->
+        <div style="padding: 0 15px;">
+            <h3 style="color: #1a6b8a; margin-bottom: 10px;">🏠 عمومي معلومات</h3>
+            
+            <div class="stats-grid" style="padding: 0;">
+                <div class="stat-card">
+                    <div class="label">💊 ټول اخیستل</div>
+                    <div class="value" id="total-buy">AFN 0.00</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="label">🏪 ټول خرڅلاو</div>
+                    <div class="value" id="total-sell">AFN 0.00</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="label">🟢 خالصه ګټه</div>
+                    <div class="value" id="net-profit">AFN 0.00</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="label">🔴 تاوان</div>
+                    <div class="value" id="total-loss">AFN 0.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================================== -->
+    <!-- د درمل اخیستلو پاڼه (Buy Page) -->
+    <!-- =============================================================== -->
+    <div id="buy-page" class="page-section">
+        <button class="back-btn" onclick="showPage('home-page')">⬅️ بیرته کور ته</button>
+        <h2 class="section-title">💊 درمل اخیستل</h2>
+        
+        <div class="form-group">
+            <label>🏪 د درملتون نوم:</label>
+            <input type="text" id="buy-pharmacy" placeholder="د درملتون نوم ولیکه">
+        </div>
+        
+        <div class="form-group">
+            <label>💊 د درمل نوم:</label>
+            <input type="text" id="buy-name" placeholder="د درمل نوم ولیکه">
+        </div>
+        
+        <div class="form-group">
+            <label>📦 تعداد:</label>
+            <input type="number" id="buy-qty" placeholder="د دانو شمیر" oninput="calcBuyTotal()">
+        </div>
+        
+        <div class="form-group">
+            <label>💵 د یوې دانې قیمت:</label>
+            <input type="number" id="buy-price" placeholder="د یوې دانې قیمت" oninput="calcBuyTotal()">
+        </div>
+        
+        <div class="form-group">
+            <label>💰 ټولې پیسې:</label>
+            <input type="number" id="buy-total" placeholder="(اتوماتیک)" readonly>
+        </div>
+        
+        <div class="form-group">
+            <label>💳 پر وخت ورکړې پیسې:</label>
+            <input type="number" id="buy-paid" placeholder="څومره پیسې ورکړې؟" oninput="calcBuyRemaining()">
+        </div>
+        
+        <div class="form-group">
+            <label>🔴 پاتې پیسې (باقي):</label>
+            <input type="number" id="buy-remaining" placeholder="(اتوماتیک)" readonly>
+        </div>
+        
+        <button class="submit-btn" onclick="savePurchase()">💾 ثبتول</button>
+    </div>
+
+    <!-- =============================================================== -->
+    <!-- د درمل پلورلو پاڼه (Sell Page) -->
+    <!-- =============================================================== -->
+    <div id="sell-page" class="page-section">
+        <button class="back-btn" onclick="showPage('home-page')">⬅️ بیرته کور ته</button>
+        <h2 class="section-title">📤 درمل پلورل</h2>
+        
+        <div class="form-group">
+            <label>🏪 د درملتون نوم:</label>
+            <input type="text" id="sell-pharmacy" placeholder="د درملتون نوم ولیکه">
+        </div>
+        
+        <div class="form-group">
+            <label>💊 د درمل نوم:</label>
+            <input type="text" id="sell-name" placeholder="د درمل نوم ولیکه" oninput="checkProfitIndicator()">
+        </div>
+        
+        <div class="form-group">
+            <label>📦 تعداد:</label>
+            <input type="number" id="sell-qty" placeholder="د دانو شمیر" oninput="calcSellTotal()">
+        </div>
+        
+        <div class="form-group">
+            <label>💵 د یوې دانې قیمت:</label>
+            <input type="number" id="sell-price" placeholder="د یوې دانې قیمت" oninput="calcSellTotal(); checkProfitIndicator();">
+        </div>
+        
+        <div class="form-group">
+            <label>💰 ټولې پیسې:</label>
+            <input type="number" id="sell-total" placeholder="(اتوماتیک)" readonly>
+        </div>
+        
+        <div class="form-group">
+            <label>💳 پر وخت ترلاسه شوې:</label>
+            <input type="number" id="sell-paid" placeholder="څومره پیسې ترلاسه کړې؟" oninput="calcSellRemaining()">
+        </div>
+        
+        <div class="form-group">
+            <label>🔴 پاتې پیسې (باقي):</label>
+            <input type="number" id="sell-remaining" placeholder="(اتوماتیک)" readonly>
+        </div>
+        
+        <!-- د ګټې/تاوان چراغ -->
+        <div id="profit-indicator" class="profit-indicator" style="display:none;">
+            <div class="indicator-circle" id="indicator-circle"></div>
+            <div class="indicator-text" id="indicator-text"></div>
+        </div>
+        
+        <button class="submit-btn" onclick="saveSale()">💾 ثبتول</button>
+    </div>
+
+    <!-- =============================================================== -->
+    <!-- د موجودي پاڼه (Inventory Page) -->
+    <!-- =============================================================== -->
+    <div id="inventory-page" class="page-section">
+        <button class="back-btn" onclick="showPage('home-page')">⬅️ بیرته کور ته</button>
+        <h2 class="section-title">📦 موجودي</h2>
+        <div id="inventory-list"></div>
+    </div>
+
+    <!-- =============================================================== -->
+    <!-- د دواخانې پاڼه (Pharmacy Page) -->
+    <!-- =============================================================== -->
+    <div id="pharmacy-page" class="page-section">
+        <button class="back-btn" onclick="showPage('home-page')">⬅️ بیرته کور ته</button>
+        <h2 class="section-title">📋 دواخانه</h2>
+        <div id="pharmacy-list"></div>
+    </div>
+
+    <!-- =============================================================== -->
+    <!-- د لیون پاڼه (Search Page) -->
+    <!-- =============================================================== -->
+    <div id="search-page" class="page-section">
+        <button class="back-btn" onclick="showPage('home-page')">⬅️ بیرته کور ته</button>
+        <h2 class="section-title">🔍 لیون</h2>
+        
+        <div class="form-group">
+            <input type="text" id="search-input" placeholder="د دوا نوم ولیکئ..." oninput="searchMedicine()">
+        </div>
+        
+        <div id="search-results"></div>
+    </div>
+
+    <!-- =============================================================== -->
+    <!-- د راپور پاڼه (Report Page) -->
+    <!-- =============================================================== -->
+    <div id="report-page" class="page-section">
+        <button class="back-btn" onclick="showPage('home-page')">⬅️ بیرته کور ته</button>
+        <h2 class="section-title">📊 د نن ورځې راپور</h2>
+        
+        <div class="form-group">
+            <label>📅 نېټه انتخاب کړه:</label>
+            <input type="date" id="report-date" onchange="renderDailyReport()">
+        </div>
+        
+        <div id="report-content"></div>
+    </div>
+
+</div>
+
+<!-- =============================================================== -->
+<!-- ښکلی پاپ اپ (Custom Alert) -->
+<!-- =============================================================== -->
+<div id="customAlert" class="alert-overlay" style="display:none;">
+    <div class="alert-box">
+        <div class="alert-icon" id="alertIcon">✅</div>
+        <h3 id="alertTitle">بریالیتوب!</h3>
+        <div class="alert-body" id="alertBody"></div>
+        <button class="alert-btn" onclick="closeAlert()">سمه ده</button>
+    </div>
+</div>
+
+<!-- =============================================================== -->
+<!-- د تصدیق پاپ اپ (Confirm Dialog) -->
+<!-- =============================================================== -->
+<div id="customConfirm" class="alert-overlay" style="display:none;">
+    <div class="alert-box">
+        <div class="alert-icon" style="font-size:40px;">⚠️</div>
+        <h3 id="confirmTitle">تصدیق</h3>
+        <div class="alert-body" id="confirmBody"></div>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+    <button class="alert-btn" onclick="closeConfirm(true)" style="background:#27ae60; flex:1; padding:12px;">
+        ✅ هو
+    </button>
+    <button class="alert-btn" onclick="closeConfirm(false)" style="background:#e74c3c; flex:1; padding:12px;">
+        ❌ نه
+    </button>
+</div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
