@@ -1,0 +1,31 @@
+# 💊 Pharmacy-calculator1
+
+د درملو حساب سیسټم
+
+## ✨ ځانګړتیاوې (Features)
+
+- 💊 درمل اخیستل (Purchase)
+- 💰 درمل پلورل (Sale)
+- 📦 موجودي (Inventory)
+- 📋 دواخانې (Pharmacy debts)
+- 🔍 لټون (Search)
+- 📊 راپور (Reports)
+- 💾 بیکپ (Backup/Restore)
+- 🔐 پیژندنه (Login)
+
+## 🛠 ټکنالوژي (Tech Stack)
+
+- HTML5
+- CSS3
+- JavaScript (Vanilla)
+- LocalStorage
+
+## 📱 Android App
+
+دا اپ د Web-to-APK وسیلو په مرسته 
+د Android App ته بدل کیدای شي.
+
+## 👨‍💻 جوړونکی (Author)
+
+**Rafiullah Masoom**
+- GitHub: [@rafiullahmasoom12](https://github.com/rafiullahmasoom12)
